@@ -1,0 +1,231 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<head>
+<link href="css/from.css" rel="stylesheet" type="text/css">
+    >
+</head>
+<body>
+<div class="div_form" id="image_form">
+    <h1 class="h1_style"><i class="i_h1"></i> 风运Go-司机申请表</h1>
+    <form id="form_demo" >
+        <p class="form_p"><label class="form_label">编号：</label><input type="text" class="form_input readonly" readonly="readonly"><i class="i_start"></i><a class="a_note">自动生成</a> </p>
+        <p class="form_p"><label class="form_label">姓名：</label><input type="text" class="form_input "name ="name" minlength="2"  required ><i class="i_start"></i> </p>
+        <p class="form_p"><label class="form_label">身份证号:</label><input type="text" class="form_input "name ="name" minlength="2"  required ><i class="i_start"></i> </p>
+        <p class="form_p"><label class="form_label">身份证(国徽面)</label><a :href="path_guohui" @click="showImage" v-model="id">{{id}}</a></p>
+        <p class="form_p"><label class="form_label">身份证(人像面):</label><a href="#">身份证(人像面)</a></i> </p>
+        <p class="form_p"><label class="form_label">驾驶证:</label><input type="file"   required ><i class="i_start"></i> </p>
+        <p class="form_p"><label class="form_label">本人手持身份证照片:</label><input type="file"   required ><i class="i_start"></i> </p>
+        <p class="form_p"><label class="form_label" style="top: 250px;position: relative">内容：</label><textarea id="editor"  class="form_area"></textarea></p>
+        <p class="but_p"><input type="submit" value="保存" class="but_save"/><input type="button" value="取消" class="but_close"> </p>
+          
+    </form>
+
+
+</div>
+<script src="js/jquery/jQuery-2.2.0.min.js"></script>
+<script src="js/date/js/laydate.js"></script>
+<script src="js/utf8-php/ueditor.config.js"></script>
+<script src="js/utf8-php/ueditor.all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
+
+<script>
+    !function(){
+        laydate.skin('danlan');//
+        laydate({elem: '#demo'});
+        laydate({elem: '#demo1'});//
+    }();
+</script>
+<script >
+    $.validator.setDefaults({
+        submitHandler: function() {
+            alert("修改成功");
+        }
+    });
+    $().ready(function() {
+        $("#form_demo").validate();
+    });
+</script>
+<script >
+
+
+    var ue = UE.getEditor('editor');
+
+
+    function isFocus(e){
+        alert(UE.getEditor('editor').isFocus());
+        UE.dom.domUtils.preventDefault(e)
+    }
+    function setblur(e){
+        UE.getEditor('editor').blur();
+        UE.dom.domUtils.preventDefault(e)
+    }
+    function insertHtml() {
+        var value = prompt('????html????', '');
+        UE.getEditor('editor').execCommand('insertHtml', value)
+    }
+    function createEditor() {
+        enableBtn();
+        UE.getEditor('editor');
+    }
+    function getAllHtml() {
+        alert(UE.getEditor('editor').getAllHtml())
+    }
+    function getContent() {
+        var arr = [];
+        arr.push("");
+        arr.push("");
+        arr.push(UE.getEditor('editor').getContent());
+        alert(arr.join("\n"));
+    }
+    function getPlainTxt() {
+        var arr = [];
+        arr.push("");
+        arr.push("");
+        arr.push(UE.getEditor('editor').getPlainTxt());
+        alert(arr.join('\n'))
+    }
+    function setContent(isAppendTo) {
+        var arr = [];
+        arr.push("");
+        UE.getEditor('editor').setContent('??????ueditor', isAppendTo);
+        alert(arr.join("\n"));
+    }
+    function setDisabled() {
+        UE.getEditor('editor').setDisabled('fullscreen');
+        disableBtn("enable");
+    }
+
+    function setEnabled() {
+        UE.getEditor('editor').setEnabled();
+        enableBtn();
+    }
+
+    function getText() {
+
+        var range = UE.getEditor('editor').selection.getRange();
+        range.select();
+        var txt = UE.getEditor('editor').selection.getText();
+        alert(txt)
+    }
+
+    function getContentTxt() {
+        var arr = [];
+        arr.push("");
+        arr.push("");
+        arr.push(UE.getEditor('editor').getContentTxt());
+        alert(arr.join("\n"));
+    }
+    function hasContent() {
+        var arr = [];
+        arr.push("");
+        arr.push("");
+        arr.push(UE.getEditor('editor').hasContents());
+        alert(arr.join("\n"));
+    }
+    function setFocus() {
+        UE.getEditor('editor').focus();
+    }
+    function deleteEditor() {
+        disableBtn();
+        UE.getEditor('editor').destroy();
+    }
+    function disableBtn(str) {
+        var div = document.getElementById('btns');
+        var btns = UE.dom.domUtils.getElementsByTagName(div, "button");
+        for (var i = 0, btn; btn = btns[i++];) {
+            if (btn.id == str) {
+                UE.dom.domUtils.removeAttributes(btn, ["disabled"]);
+            } else {
+                btn.setAttribute("disabled", "true");
+            }
+        }
+    }
+    function enableBtn() {
+        var div = document.getElementById('btns');
+        var btns = UE.dom.domUtils.getElementsByTagName(div, "button");
+        for (var i = 0, btn; btn = btns[i++];) {
+            UE.dom.domUtils.removeAttributes(btn, ["disabled"]);
+        }
+    }
+
+    function getLocalData () {
+        alert(UE.getEditor('editor').execCommand( "getlocaldata" ));
+    }
+
+    function clearLocalData () {
+        UE.getEditor('editor').execCommand( "clearlocaldata" );
+        alert("")
+    }
+</script>
+<script>
+     function getUrlParameter(name) {
+        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+        var results = regex.exec(location.search);
+        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    }
+    var ID = getUrlParameter("id");
+    // var id = ID.substr(-3);
+    // id = parseInt(id);
+    // console.log(id);
+    // JavaScript代码
+    var selectedData;
+    fetch('json/notice.json')
+    .then(response => response.json())
+    .then(data => {
+        // 获取 JSON 数据中的数组部分
+        var jsonData = data.data;
+        
+        // 找到与 ID 匹配的对象
+        selectedData = jsonData.find(function(item) {
+        return item.id === ID;
+        });
+        if (selectedData) {
+            // 输出匹配的对象
+            console.log(selectedData);
+            const app = new Vue({
+                el:"#image_form",
+                data: {
+                    id: selectedData.id,
+                    path_guohui: "images/SBNVG001.png",
+                    path_renxiang:  "2.png",
+                    path_drive: "3.png",
+                    path_shouchi:"4.png" 
+                },
+                methods:{
+                    showImage(){
+                        // window.open(this.path_guohui,'_blank');
+                        console.log(this);
+                        console.log(this.id);
+                    }
+
+                }
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+    
+</script>
+<!-- <script>
+    const app = new Vue({
+        el:"#image_form",
+        data: {
+            id:"",
+            path_guohui: "images/SBNVG001.png",
+            path_renxiang:  "2.png",
+            path_drive: "3.png",
+            path_shouchi:"4.png"
+        },
+        methods: {
+            showImage(){
+                window.open(this.path_guohui,'_blank')
+            }
+        },
+    }); -->
+</body>
+</html>
